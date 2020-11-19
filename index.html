@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+    integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+    crossorigin="anonymous"></script>
+  <title>Roster Giocatori</title>
+</head>
+
+<body>
+  <div id="app" class="container">
+    <!-- contenitore sx -->
+    <div class="left">
+      <div class="left-searchbar">
+        <label class="search-label" for="search">
+          <i class="fa fa-search" aria-hidden="true" ></i>
+        </label>
+        <input id="players-filter" @keyup="searchPlayers" v-model="searchText" class="left-searchbar-input" placeholder="Cerca un codice giocatore"
+          name="search">
+      </div>
+      <div class="players">
+        <div v-for="(player, index) in players" v-if="player.visible" @click="setActivePlayer(index)" :class="(index == indicePlayer) ? 'contact active' : 'contact'">
+          <div class="contact-info">
+            <h3>
+              <span class="contact-name">{{player.nome}}</span>
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="left-footer">
+        <input class="new-message-inputs" placeholder="Aggiungi giocatore">
+        <div class="left-footer-icon f-right">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+    <!-- /contenitore sx -->
+    <!-- contenitore dx -->
+    <div class="right">
+      <div class="header-right">
+        <div class="header-right-logo">
+          <h3>Statistiche di <span id="header-right-contact-name">{{players[indicePlayer].nome}}</span></h3>
+        </div>
+      </div>
+      <div class="right-messages-container">
+        <div class="right-messages" id="chat_container">
+          <div class="panel-body">
+            <div class="categories">
+              <div class="category">
+                <span>Rimbalzi</span>
+                <span>{{players[indicePlayer].rimbalzi}}</span>
+              </div>
+              <div class="category">
+                <span>Falli</span>
+                <span>{{players[indicePlayer].falli}}</span>
+              </div>
+              <div class="category">
+                <span>Punti segnati</span>
+                <span v-if="editStat.read" @click="editStat.read = false; editStat.update = true;" >{{players[indicePlayer].puntiSegnati}}</span>
+                <input v-if="editStat.update" @keyup.enter="editStat.read = true; editStat.update = false;" v-model="players[indicePlayer].puntiSegnati" />
+              </div>
+            </div>
+          </div>
+
+          <div class="ultime-partite" v-if="players[indicePlayer].matches.length > 0">
+            <h3>Ultime partite fatte</h3>
+
+            <div class="partita" v-for="(match) in players[indicePlayer].matches">
+              Avversario: <span class="opposing-team">{{match}}</span>
+
+              <div class="match-icon f-right">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+          <div v-else class="ultime-partite">
+              <h3>Nessuna partita aggiunta</h3>
+          </div>
+        </div>
+      </div>
+      <div class="right-footer">
+        <input class="new-message-inputs" placeholder="Aggiungi partita" v-model="newMatch" @keyup.enter="addMatch()">
+        <div class="right-footer-icon f-right">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+    <!-- /contenitore dx -->
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
